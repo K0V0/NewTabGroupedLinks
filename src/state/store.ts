@@ -1,28 +1,36 @@
 import { AppState, Group, Link } from "./models";
 import { uid } from "./id";
+import {storage} from "./chromeStorage";
 
 type Listener = (state: AppState) => void;
+const STORAGE_KEY = "workspace_state";
 
 class Store {
     private state!: AppState;
     private listeners = new Set<Listener>();
 
-    init(initialState: AppState) {
-        this.state = initialState;
+    async init(initialState: AppState) {
+        const saved = await storage.get<AppState>(STORAGE_KEY);
+        this.state = saved ?? initialState;
         this.emit();
     }
 
-    getState(): AppState {
+    private emit() {
+        for (const l of this.listeners) l(this.state);
+        this.save();
+    }
+
+    private async save() {
+        await storage.set(STORAGE_KEY, this.state);
+    }
+
+    getState() {
         return this.state;
     }
 
-    subscribe(listener: Listener) {
+    subscribe(listener: (state: AppState) => void) {
         this.listeners.add(listener);
         return () => this.listeners.delete(listener);
-    }
-
-    private emit() {
-        this.listeners.forEach(l => l(this.state));
     }
 
     /* ================== CRUD ================== */

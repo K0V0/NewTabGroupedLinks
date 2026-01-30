@@ -3,4 +3,8 @@ import { initialState } from "./state/initialState";
 
 import "./components/workspace";
 
-store.init(initialState);
+// store.init(initialState);
+
+(async () => {
+    await store.init(initialState);
+})();
