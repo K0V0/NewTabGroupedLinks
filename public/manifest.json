@@ -1,0 +1,10 @@
+{
+  "manifest_version": 3,
+  "name": "Workspace Links",
+  "version": "0.1.0",
+  "description": "Custom new tab workspace",
+  "chrome_url_overrides": {
+    "newtab": "index.html"
+  },
+  "permissions": ["storage"]
+}
