@@ -1,10 +1,9 @@
-import { store } from "./state/store";
-import { initialState } from "./state/initialState";
+import { appStateDAO } from "./backend/repository/AppStateRepository";
+import { appStateInit } from "./backend/datasource/init/AppStateInit";
 
-import "./components/workspace";
-
-// store.init(initialState);
+import "./ui/components/workspace";
 
 (async () => {
-    await store.init(initialState);
+    await appStateDAO.init(appStateInit)
+        .then();
 })();

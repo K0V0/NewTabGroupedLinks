@@ -1,12 +1,11 @@
-import { AppState } from "./models";
+import { AppState } from "../../entity/AppStateEntity";
 
-export const initialState: AppState = {
+export const appStateInit: AppState = {
     activeEnvironmentId: "env-1",
     environments: {
         "env-1": {
             id: "env-1",
             name: "Default",
-            groups: ["group-1", "group-2"]
         }
     },
     groups: {
@@ -14,15 +13,22 @@ export const initialState: AppState = {
             id: "group-1",
             environmentId: "env-1",
             title: "Work",
-            items: []
         },
         "group-2": {
             id: "group-2",
             environmentId: "env-1",
             title: "Personal",
-            items: []
         }
     },
     subgroups: {},
-    links: {}
+    links: {
+        "test-link-1": {
+            title: "test link",
+            id: "test",
+            subGroupId: "",
+            groupId: "group-1",
+            environmentId: "env-1",
+            url: "http://kokot.do.pici"
+        }
+    }
 };

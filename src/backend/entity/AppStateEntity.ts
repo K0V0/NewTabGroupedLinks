@@ -9,30 +9,27 @@ export interface AppState {
 export interface Environment {
     id: string;
     name: string;
-    groups: string[];
 }
 
 export interface Group {
     id: string;
-    environmentId: string;
     title: string;
-    items: GroupItem[];
+    environmentId: string;
 }
 
-export type GroupItem =
-    | { type: "link"; linkId: string }
-    | { type: "subgroup"; subgroupId: string };
-
-export interface Subgroup {
+export interface GroupItem {
     id: string;
     title: string;
+    environmentId: string;
+    groupId: string;
+}
+
+export interface Subgroup extends GroupItem {
     collapsed: boolean;
     defaultCollapsed: boolean;
-    links: string[];
 }
 
-export interface Link {
-    id: string;
-    title: string;
+export interface Link extends GroupItem {
     url: string;
+    subGroupId: string;
 }

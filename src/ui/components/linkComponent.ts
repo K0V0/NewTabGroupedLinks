@@ -1,0 +1,3 @@
+class LinkComponent extends HTMLElement{
+
+}
