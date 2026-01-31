@@ -1,4 +1,4 @@
-import { store } from "../state/store";
+import { store } from "../store/store";
 import { AppState } from "../state/models";
 import "./group";
 
@@ -11,6 +11,7 @@ class WorkspaceRoot extends HTMLElement {
     }
 
     render(state: AppState) {
+        if (!state || !state.environments) return;
         const env = state.environments[state.activeEnvironmentId];
         if (!env) return;
 

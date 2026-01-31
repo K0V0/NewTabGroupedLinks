@@ -16,12 +16,23 @@ export interface Group {
     id: string;
     environmentId: string;
     title: string;
-    items: GroupItem[];
+    items: (LinkItem | SubgroupItem)[];
 }
 
-export type GroupItem =
-    | { type: "link"; linkId: string }
-    | { type: "subgroup"; subgroupId: string };
+// export type GroupItem =
+//     | { type: "link"; linkId: string }
+//     | { type: "subgroup"; subgroupId: string };
+
+export interface LinkItem {
+    type: "link";
+    linkId: string;
+}
+
+export interface SubgroupItem {
+    type: "subgroup";
+    subgroupId: string;
+}
+
 
 export interface Subgroup {
     id: string;

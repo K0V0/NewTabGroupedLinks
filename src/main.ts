@@ -1,4 +1,4 @@
-import { store } from "./state/store";
+import { store } from "./store/store";
 import { initialState } from "./state/initialState";
 
 import "./components/workspace";
@@ -7,4 +7,5 @@ import "./components/workspace";
 
 (async () => {
     await store.init(initialState);
+    //document.querySelector("my-workspace")?.render(); // or trigger custom render
 })();

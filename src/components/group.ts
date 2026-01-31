@@ -1,4 +1,4 @@
-import { store } from "../state/store";
+import { store } from "../store/store";
 import { Group } from "../state/models";
 
 class GroupComponent extends HTMLElement {
