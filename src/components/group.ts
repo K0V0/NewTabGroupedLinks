@@ -26,28 +26,28 @@ class GroupComponent extends HTMLElement {
         if (!this.group) return;
 
         this.innerHTML = `
-      <div>
-        <h3>${this.group.title}</h3>
-
-        <button data-action="add-link">+ link</button>
-        <button data-action="delete-group">delete</button>
-
-        <ul>
-          ${this.group.items.map(item => {
-            if (item.type === "link") {
-                const link = store.getState().links[item.linkId];
-                return `
-                <li>
-                  <a href="${link.url}">${link.title}</a>
-                  <button data-action="delete-link" data-id="${link.id}">x</button>
-                </li>
-              `;
-            }
-            return "";
-        }).join("")}
-        </ul>
-      </div>
-    `;
+          <div>
+            <h3>${this.group.title}</h3>
+    
+            <button data-action="add-link">+ link</button>
+            <button data-action="delete-group">delete</button>
+    
+            <ul>
+              ${this.group.items.map(item => {
+                if (item.type === "link") {
+                    const link = store.getState().links[item.linkId];
+                    return `
+                    <li draggable="true">
+                      <a href="${link.url}">${link.title}</a>
+                      <button data-action="delete-link" data-id="${link.id}">x</button>
+                    </li>
+                  `;
+                }
+                return "";
+            }).join("")}
+            </ul>
+          </div>
+        `;
 
         this.bindEvents();
     }

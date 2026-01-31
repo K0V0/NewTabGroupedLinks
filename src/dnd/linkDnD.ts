@@ -13,6 +13,8 @@ export function attachLinkDnD(el: HTMLElement, p: LinkDnDParams) {
     el.draggable = true;
 
     el.addEventListener("dragstart", e => {
+        console.log("dragstart event: group: " + p.groupId + ", link: " + p.linkId + ", index: " + p.index);
+        console.log("target: " + e.target);
         setDragPayload(e, {
             kind: "link",
             linkId: p.linkId,
@@ -24,6 +26,8 @@ export function attachLinkDnD(el: HTMLElement, p: LinkDnDParams) {
     el.addEventListener("dragover", e => e.preventDefault());
 
     el.addEventListener("drop", e => {
+        console.log("drop event: group: " + p.groupId + ", link: " + p.linkId + ", index: " + p.index);
+        console.log("target: " + e.target);
         e.preventDefault();
         const payload = getDragPayload(e);
         if (!payload || payload.kind !== "link") return;
