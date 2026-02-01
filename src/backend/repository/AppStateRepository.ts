@@ -5,7 +5,6 @@ import {ChromeStorageWrapper} from "../datasource/chromeStorage/chromeStorageWra
 import {ObservableValue} from "../../utils/observableValue";
 import {appStateInit} from "../datasource/init/AppStateInit";
 
-// type Listener = (state: AppState) => void;
 const STORAGE_KEY = "workspace_state";
 
 export class AppStateRepository {
@@ -30,14 +29,6 @@ export class AppStateRepository {
         console.log("save() called");
     }
 
-    // private async get() {
-    //     return await this.datasource.get(STORAGE_KEY);
-    // }
-    //
-    // getState() {
-    //     return this.state;
-    // }
-
     public getCurrentEnvironment(): Environment {
         const environmentId: string = this.state.activeEnvironmentId;
         if (!environmentId) throw new Error(
@@ -61,12 +52,6 @@ export class AppStateRepository {
             "Link with link ID " + linkId + " does not exists in AppState data model");
         return link;
     }
-
-    //TODO odjebať niekde do piče ? je toto concern tejto triedy ?
-    // subscribe(listener: (state: AppState) => void) {
-    //     this.listeners.add(listener);
-    //     return () => this.listeners.delete(listener);
-    // }
 
     /* ================== CRUD ================== */
 
