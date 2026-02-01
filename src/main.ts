@@ -2,11 +2,13 @@ import { appStateDAO } from "./backend/repository/AppStateRepository";
 import { appStateInit } from "./backend/datasource/init/AppStateInit";
 
 import {WorkspaceComponent} from "./ui/components/workspaceComponent";
+import {GroupComponent} from "./ui/components/groupComponent";
 
 // define custom elements used BEFORE they are created/constructed
 // otherwise You are unable to call custom methods for example for
 // injecting repository later on them
 customElements.define("workspace-root", WorkspaceComponent);
+customElements.define("link-group", GroupComponent);
 
 (async () => {
 

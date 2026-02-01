@@ -1,6 +1,6 @@
 import {AppStateRepository} from "../backend/repository/AppStateRepository";
 import {ObservableValue} from "../utils/observableValue";
-import {AppState, Environment} from "../backend/entity/AppStateEntity";
+import {AppState} from "../backend/entity/AppStateEntity";
 
 interface Workspace {
     id: string;

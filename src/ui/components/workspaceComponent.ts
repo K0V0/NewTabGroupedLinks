@@ -1,5 +1,7 @@
 import {AppStateRepository} from "../../backend/repository/AppStateRepository";
 import {WorkspaceViewModel, WorkspaceViewModelAttributes} from "../../viewModel/workspaceViewModel";
+import {GroupComponent} from "./groupComponent";
+import {qsAll} from "../../utils/firstOrderMethods";
 
 export class WorkspaceComponent extends HTMLElement {
 
@@ -20,6 +22,7 @@ export class WorkspaceComponent extends HTMLElement {
         this.workspaceViewModel.attributesObservable
             .subscribe(attrs => {
                 this.htmlTemplate(attrs);
+                this.callbacks();
             });
     }
 
@@ -40,6 +43,13 @@ export class WorkspaceComponent extends HTMLElement {
             <footer>
             </footer>
         `;
+    }
+
+    private callbacks(): void {
+        qsAll<GroupComponent>("link-group", this)
+            .forEach(lg => {
+                lg.setRepository(this.appStateRepository);
+            });
     }
 
 }
