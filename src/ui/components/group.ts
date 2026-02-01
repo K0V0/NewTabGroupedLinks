@@ -1,5 +1,3 @@
-import { appStateDAO } from "../../backend/repository/AppStateRepository";
-import { Group } from "../../backend/entity/AppStateEntity";
 
 // class GroupComponent extends HTMLElement {
 //     private group?: Group;

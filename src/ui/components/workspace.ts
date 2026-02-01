@@ -1,6 +1,4 @@
-import { appStateDAO } from "../../backend/repository/AppStateRepository";
-import { AppState } from "../../backend/entity/AppStateEntity";
-import "./group";
+// import "./group";
 
 // class WorkspaceRoot extends HTMLElement {
 //     private unsubscribe?: () => void;

@@ -1,31 +1,49 @@
-import {AppState, Group, Link} from "../entity/AppStateEntity";
+import {AppState, Environment, Group, Link} from "../entity/AppStateEntity";
 import {uid} from "../../utils/id";
 import {ChromeStorageWrapper} from "../datasource/chromeStorage/chromeStorageWrapper";
 import {AppStateRepositoryUtils} from "./AppStateRepositoryUtils";
+import {ObservableValue} from "../../utils/observableValue";
+import {appStateInit} from "../datasource/init/AppStateInit";
 
-type Listener = (state: AppState) => void;
+// type Listener = (state: AppState) => void;
 const STORAGE_KEY = "workspace_state";
 
 export class AppStateRepository {
 
     private state!: AppState;
-    //private listeners = new Set<Listener>();
+    readonly state$ = new ObservableValue<AppState>(appStateInit);
+
     private datasource = new ChromeStorageWrapper()
     private repositoryUtils: AppStateRepositoryUtils = new AppStateRepositoryUtils(this.state);
 
     public async init(initialState: AppState) {
         const saved = await this.datasource.get<AppState>(STORAGE_KEY);
         this.state = saved ?? initialState;
+        this.state$.set(this.state);
         await this.save();
     }
 
     private async save() {
-        // for (const l of this.listeners) l(this.state);
         await this.datasource.save(STORAGE_KEY, this.state);
+        this.state$.set(this.state);
     }
 
-    getState() {
-        return this.state;
+    // private async get() {
+    //     return await this.datasource.get(STORAGE_KEY);
+    // }
+    //
+    // getState() {
+    //     return this.state;
+    // }
+
+    public getCurrentEnvironment(): Environment {
+        const environmentId: string = this.state.activeEnvironmentId;
+        if (!environmentId) throw new Error(
+            "Environment ID does not exists in AppState data model");
+        const environment: Environment = this.state.environments[environmentId];
+        if (!environment) throw new Error(
+            "Environment with ID " + environmentId + " does not exists in app state");
+        return environment;
     }
 
     public getGroup(groupId: string): Group {

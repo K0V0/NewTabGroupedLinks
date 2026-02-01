@@ -1,6 +1,6 @@
 type Subscriber<T> = (value: T) => void
 
-class ObservableValue<T> {
+export class ObservableValue<T> {
     private value: T
     private subs = new Set<Subscriber<T>>()
 

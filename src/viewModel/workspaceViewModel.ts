@@ -1,12 +1,16 @@
 import {AppStateRepository} from "../backend/repository/AppStateRepository";
+import {ObservableValue} from "../utils/observableValue";
 
 export class WorkspaceViewModel {
 
-    //TODO dať do bázovej triedy
-    private appStateRepository: AppStateRepository;
+    readonly environmentName: ObservableValue<string> = new ObservableValue<string>("");
 
-    constructor(appStateRepository: AppStateRepository) {
-        this.appStateRepository = appStateRepository;
+    constructor(repo: AppStateRepository) {
+        repo.state$.subscribe(state => {
+            const envId = state.activeEnvironmentId;
+            const env = state.environments[envId];
+            this.environmentName.set(env?.name ?? "Unknown");
+        });
     }
 
 }

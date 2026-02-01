@@ -1,9 +1,12 @@
 import { appStateDAO } from "./backend/repository/AppStateRepository";
 import { appStateInit } from "./backend/datasource/init/AppStateInit";
 
-import "./ui/components/workspaceComponent";
+import {WorkspaceComponent} from "./ui/components/workspaceComponent";
 
 (async () => {
     await appStateDAO.init(appStateInit)
-        .then();
+    document.body.innerHTML = `<workspace-root></workspace-root>`
+    console.log("main.ts bootstrap done ...");
+    const workspaceComponent: WorkspaceComponent = new WorkspaceComponent(appStateDAO);
+    workspaceComponent.render();
 })();
