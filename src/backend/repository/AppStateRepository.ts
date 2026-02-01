@@ -1,7 +1,7 @@
 import {AppState, Environment, Group, Link} from "../entity/AppStateEntity";
 import {uid} from "../../utils/id";
 import {ChromeStorageWrapper} from "../datasource/chromeStorage/chromeStorageWrapper";
-import {AppStateRepositoryUtils} from "./AppStateRepositoryUtils";
+// import {AppStateRepositoryUtils} from "./AppStateRepositoryUtils";
 import {ObservableValue} from "../../utils/observableValue";
 import {appStateInit} from "../datasource/init/AppStateInit";
 
@@ -14,18 +14,20 @@ export class AppStateRepository {
     readonly state$ = new ObservableValue<AppState>(appStateInit);
 
     private datasource = new ChromeStorageWrapper()
-    private repositoryUtils: AppStateRepositoryUtils = new AppStateRepositoryUtils(this.state);
+    //private repositoryUtils!: AppStateRepositoryUtils;
 
     public async init(initialState: AppState) {
+        console.log("init repa");
         const saved = await this.datasource.get<AppState>(STORAGE_KEY);
         this.state = saved ?? initialState;
         this.state$.set(this.state);
-        await this.save();
+        return this.save();
     }
 
     private async save() {
         await this.datasource.save(STORAGE_KEY, this.state);
         this.state$.set(this.state);
+        console.log("save() called");
     }
 
     // private async get() {

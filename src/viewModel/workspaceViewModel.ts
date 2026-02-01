@@ -6,6 +6,7 @@ export class WorkspaceViewModel {
     readonly environmentName: ObservableValue<string> = new ObservableValue<string>("");
 
     constructor(repo: AppStateRepository) {
+        console.log("workspace view model constructed");
         repo.state$.subscribe(state => {
             const envId = state.activeEnvironmentId;
             const env = state.environments[envId];

@@ -3,15 +3,17 @@ import {WorkspaceViewModel} from "../../viewModel/workspaceViewModel";
 
 export class WorkspaceComponent extends HTMLElement {
 
-    // connectedCallback() {
-    //     this.render(ViewModels.getWorkspaceViewModel());
-    // }
+    private workspaceViewModel!: WorkspaceViewModel;
+    private appStateRepository!: AppStateRepository;
 
-    private workspaceViewModel: WorkspaceViewModel
+    setRepository(repo: AppStateRepository) {
+        this.appStateRepository = repo;
+    }
 
-    constructor(appStateRepository: AppStateRepository) {
-        super();
-        this.workspaceViewModel = new WorkspaceViewModel(appStateRepository);
+    connectedCallback() {
+        if (!this.appStateRepository) throw new Error("Repository not set");
+        this.workspaceViewModel = new WorkspaceViewModel(this.appStateRepository);
+        this.render();
     }
 
     render() {
@@ -27,5 +29,3 @@ export class WorkspaceComponent extends HTMLElement {
     }
 
 }
-
-customElements.define("workspace-root", WorkspaceComponent);
