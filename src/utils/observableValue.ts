@@ -1,3 +1,5 @@
+import isEqual from 'fast-deep-equal';
+
 type Subscriber<T> = (value: T) => void
 
 export class ObservableValue<T> {
@@ -13,6 +15,7 @@ export class ObservableValue<T> {
     }
 
     set(value: T) {
+        if (isEqual(this.value, value)) return;
         this.value = value
         this.subs.forEach(fn => fn(value))
     }
@@ -21,5 +24,21 @@ export class ObservableValue<T> {
         this.subs.add(fn)
         fn(this.value)
         return () => this.subs.delete(fn)
+    }
+
+    map<U>(selector: (value: T) => U): ObservableValue<U> {
+        const mapped = new ObservableValue<U>(selector(this.value));
+        this.subscribe(value => {
+            mapped.set(selector(value));
+        });
+        return mapped;
+    }
+
+    pick<K extends keyof T>(...keys: K[]): ObservableValue<Pick<T, K>> {
+        return this.map(value => {
+            const picked = {} as Pick<T, K>;
+            keys.forEach(k => (picked[k] = value[k]));
+            return picked;
+        });
     }
 }

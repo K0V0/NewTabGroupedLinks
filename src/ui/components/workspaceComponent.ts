@@ -1,5 +1,5 @@
 import {AppStateRepository} from "../../backend/repository/AppStateRepository";
-import {WorkspaceViewModel, WorkspaceViewModelAttributes} from "../../viewModel/workspaceViewModel";
+import {WorkspaceDTO, WorkspaceViewModel} from "../../viewModel/workspaceViewModel";
 import {GroupComponent} from "./groupComponent";
 import {qsAll} from "../../utils/firstOrderMethods";
 
@@ -16,33 +16,40 @@ export class WorkspaceComponent extends HTMLElement {
         if (!this.appStateRepository) throw new Error("Repository not set");
         this.workspaceViewModel = new WorkspaceViewModel(this.appStateRepository);
         this.render();
+        this.callbacks();
     }
 
     render() {
-        this.workspaceViewModel.attributesObservable
-            .subscribe(attrs => {
-                this.htmlTemplate(attrs);
-                this.callbacks();
-            });
-    }
 
-    private htmlTemplate(attrs: WorkspaceViewModelAttributes): void {
-        this.innerHTML = `
-            <header>
-                ${attrs.workspaces.map(
-                    workspace => `<button class="switch-workspace" id="${workspace.id}">${workspace.title}</button>`
-                ).join("")}
-            </header>
-            <main>
-                <h1>${attrs.environmentName}</h1>
-                <button id="add-group">+ group</button>
-                ${attrs.groupsIds.map(
-                    id => `<link-group group-id="${id}"></link-group>`
-                ).join("")}
-            </main>
-            <footer>
-            </footer>
-        `;
+        this.workspaceViewModel.workspacesObservable
+            .subscribe((workspaces: WorkspaceDTO[])  => {
+                this.innerHTML += `
+                    <header>
+                    ${workspaces.map(
+                        workspace => `<button class="switch-workspace" id="${workspace.id}">${workspace.title}</button>`
+                    ).join("")}
+                    </header>
+                `;
+            });
+
+        this.innerHTML += `<main>`;
+
+        this.workspaceViewModel.workspaceNameObservable
+            .subscribe((name: string) => this.innerHTML += `<h1>${name}</h1>`);
+
+        this.innerHTML += `<button id="add-group">+ group</button>`;
+
+        this.workspaceViewModel.groupIdsObservable
+            .subscribe((groupIds: string[]) => {
+                this.innerHTML += `
+                    ${groupIds.map(
+                        id => `<link-group group-id="${id}"></link-group>`
+                    ).join("")}
+                `;
+            });
+
+        this.innerHTML += `</main>`;
+        this.innerHTML += `<footer></footer>`;
     }
 
     private callbacks(): void {
