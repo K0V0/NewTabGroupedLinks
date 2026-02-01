@@ -1,5 +1,14 @@
 import { AppState } from "../../entity/AppStateEntity";
 
+/**
+ *  Správne vyrenderovanie testovacích dát:
+ *
+ *  - test link 1
+ *  - testovacia podskupina 1
+ *    - test link 2
+ *  - test link 3
+ */
+
 export const appStateInit: AppState = {
     activeEnvironmentId: "env-1",
     environments: {
@@ -28,27 +37,40 @@ export const appStateInit: AppState = {
             environmentId: "env-1",
             collapsed: false,
             defaultCollapsed: false,
-            type: "subgroup"
+            type: "subgroup",
+            position: 1
         }
     },
     links: {
         "test-link-1": {
-            title: "test link",
-            id: "test",
+            title: "test link 1",
+            id: "test-1",
             subGroupId: "",
             groupId: "group-1",
             environmentId: "env-1",
             url: "http://kokot.do.pici",
-            type: "link"
+            type: "link",
+            position: 0
         },
         "test-link-2": {
             title: "test link 2",
-            id: "test2",
+            id: "test-2",
             subGroupId: "subgroup-1",
             groupId: "group-1",
             environmentId: "env-1",
             url: "http://kokot.do.pici",
-            type: "link"
+            type: "link",
+            position: 0
+        },
+        "test-link-3": {
+            title: "test link 3",
+            id: "test-3",
+            subGroupId: "",
+            groupId: "group-1",
+            environmentId: "env-1",
+            url: "http://kokot.do.pici",
+            type: "link",
+            position: 2
         }
     }
 };
