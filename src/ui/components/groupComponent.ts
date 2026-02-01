@@ -33,6 +33,9 @@ export class GroupComponent extends HTMLElement {
     render() {
         this.groupViewModel.groupItemsObservable
             .subscribe(attrs => {
+                console.log("subscribe success");
+                console.log(attrs.length);
+                console.log(attrs);
                 this.htmlTemplate(attrs);
             });
     }

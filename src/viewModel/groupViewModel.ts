@@ -1,6 +1,6 @@
 import {ObservableValue} from "../utils/observableValue";
 import {AppStateRepository} from "../backend/repository/AppStateRepository";
-import {AppState, GroupItem, Link, Subgroup} from "../backend/entity/AppStateEntity";
+import {Link, Subgroup} from "../backend/entity/AppStateEntity";
 
 export class GroupViewModel {
 
@@ -18,7 +18,12 @@ export class GroupViewModel {
             .pick("subgroups", "links", "activeEnvironmentId")
             .subscribe(attrs => {
 
+                console.log("-----------------------");
                 console.log("subscribed na grup data");
+                console.log(attrs.links);
+                console.log(attrs);
+                console.log(attrs.subgroups);
+                console.log("-----------------------");
 
                 const currentEnvironmentId = attrs.activeEnvironmentId;
                 const groupItems: (Link | Subgroup)[] = Object

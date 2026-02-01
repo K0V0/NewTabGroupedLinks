@@ -12,15 +12,25 @@ export const appStateInit: AppState = {
         "group-1": {
             id: "group-1",
             environmentId: "env-1",
-            title: "Work",
+            title: "Work"
         },
         "group-2": {
             id: "group-2",
             environmentId: "env-1",
-            title: "Personal",
+            title: "Personal"
         }
     },
-    subgroups: {},
+    subgroups: {
+        "subgroup-1": {
+            id: "subgroup-1",
+            title: "Testovacia podskupina 1",
+            groupId: "group-1",
+            environmentId: "env-1",
+            collapsed: false,
+            defaultCollapsed: false,
+            type: "subgroup"
+        }
+    },
     links: {
         "test-link-1": {
             title: "test link",
@@ -28,7 +38,17 @@ export const appStateInit: AppState = {
             subGroupId: "",
             groupId: "group-1",
             environmentId: "env-1",
-            url: "http://kokot.do.pici"
+            url: "http://kokot.do.pici",
+            type: "link"
+        },
+        "test-link-2": {
+            title: "test link 2",
+            id: "test2",
+            subGroupId: "subgroup-1",
+            groupId: "group-1",
+            environmentId: "env-1",
+            url: "http://kokot.do.pici",
+            type: "link"
         }
     }
 };
