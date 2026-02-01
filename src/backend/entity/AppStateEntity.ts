@@ -22,6 +22,7 @@ export interface GroupItem {
     title: string;
     environmentId: string;
     groupId: string;
+    type: string;
 }
 
 export interface Subgroup extends GroupItem {

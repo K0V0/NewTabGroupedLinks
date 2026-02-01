@@ -1,5 +1,6 @@
 import {AppStateRepository} from "../../backend/repository/AppStateRepository";
-import {GroupViewModel, GroupViewModelAttributes} from "../../viewModel/groupViewModel";
+import {GroupViewModel} from "../../viewModel/groupViewModel";
+import {Link, Subgroup} from "../../backend/entity/AppStateEntity";
 
 export class GroupComponent extends HTMLElement {
 
@@ -12,27 +13,35 @@ export class GroupComponent extends HTMLElement {
         this.tryInit();
     }
 
+    setGroupId(groupId: string) {
+        this.groupId = groupId;
+        this.tryInit();
+    }
+
     connectedCallback() {
         this.groupId = this.getAttribute("group-id")!;
         this.tryInit();
     }
 
     tryInit() {
-        if (!this.isConnected || !this.appStateRepository) return;
-        this.groupViewModel = new GroupViewModel(this.appStateRepository);
+        if (!this.isConnected || !this.appStateRepository || !this.groupId) return;
+        console.log("inited");
+        this.groupViewModel = new GroupViewModel(this.appStateRepository, this.groupId);
         this.render();
     }
 
     render() {
-        this.groupViewModel.attributesObservable
+        this.groupViewModel.groupItemsObservable
             .subscribe(attrs => {
                 this.htmlTemplate(attrs);
             });
     }
 
-    private htmlTemplate(attrs: GroupViewModelAttributes): void {
+    private htmlTemplate(groupItems: (Link | Subgroup)[]): void {
         this.innerHTML = `
-            KOKOOOOOOT
+             ${groupItems.map(
+                groupItem => `<div id="${groupItem.id}">${groupItem.title}</div>`
+            ).join("")}
         `;
     }
 

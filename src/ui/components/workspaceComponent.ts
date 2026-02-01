@@ -53,9 +53,13 @@ export class WorkspaceComponent extends HTMLElement {
     }
 
     private callbacks(): void {
+
+        console.log("callbacks na link-group");
+
         qsAll<GroupComponent>("link-group", this)
             .forEach(lg => {
                 lg.setRepository(this.appStateRepository);
+                lg.setGroupId(lg.id);
             });
     }
 
