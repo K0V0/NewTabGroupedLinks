@@ -2,6 +2,11 @@ import {AppStateRepository} from "../backend/repository/AppStateRepository";
 import {ObservableValue} from "../utils/observableValue";
 import {AppState, Environment} from "../backend/entity/AppStateEntity";
 
+interface Workspace {
+    id: string;
+    title: string;
+}
+
 export class WorkspaceViewModel {
 
     readonly attributesObservable: ObservableValue<WorkspaceViewModelAttributes>
@@ -21,9 +26,9 @@ export class WorkspaceViewModelAttributes {
 
     private state!: AppState;
 
-    private _environment!: Environment;
     private _environmentName!: string;
-    private _environmentId!: string;
+    private _groups_ids!: string[];
+    private _workspaces!: Workspace[];
 
     public setState(state: AppState) {
         this.state = state;
@@ -31,20 +36,30 @@ export class WorkspaceViewModelAttributes {
     }
 
     private updateAttributes() {
-        this._environmentId = this.state.activeEnvironmentId;
-        this._environment = this.state.environments[this._environmentId];
-        this._environmentName = this._environment.name;
+        const activeEnvironmentId = this.state.activeEnvironmentId;
+        const activeEnvironment = this.state.environments[activeEnvironmentId];
+
+        this._environmentName = activeEnvironment.name;
+        this._groups_ids = Object
+            .values(this.state.groups)
+            .map(group => group.id);
+        this._workspaces = Object
+            .values(this.state.environments)
+            .map(env => ({
+                id: env.id,
+                title: env.name
+            }));
     }
 
     get environmentName(): string {
         return this._environmentName;
     }
 
-    get environmentId(): string {
-        return this._environmentId;
+    get groupsIds(): string[] {
+        return this._groups_ids;
     }
 
-    get environment(): Environment {
-        return this._environment;
+    get workspaces(): Workspace[] {
+        return this._workspaces;
     }
 }

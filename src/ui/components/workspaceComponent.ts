@@ -17,7 +17,6 @@ export class WorkspaceComponent extends HTMLElement {
     }
 
     render() {
-        console.log("Workspace component render");
         this.workspaceViewModel.attributesObservable
             .subscribe(attrs => {
                 this.htmlTemplate(attrs);
@@ -26,7 +25,20 @@ export class WorkspaceComponent extends HTMLElement {
 
     private htmlTemplate(attrs: WorkspaceViewModelAttributes): void {
         this.innerHTML = `
-            <h1>${attrs.environmentName}</h1>
+            <header>
+                ${attrs.workspaces.map(
+                    workspace => `<button class="switch-workspace" id="${workspace.id}">${workspace.title}</button>`
+                ).join("")}
+            </header>
+            <main>
+                <h1>${attrs.environmentName}</h1>
+                <button id="add-group">+ group</button>
+                ${attrs.groupsIds.map(
+                    id => `<link-group group-id="${id}"></link-group>`
+                ).join("")}
+            </main>
+            <footer>
+            </footer>
         `;
     }
 
