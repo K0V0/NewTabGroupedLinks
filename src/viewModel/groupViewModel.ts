@@ -98,19 +98,23 @@ export class GroupViewModel {
                 result
                     .filter((groupItem: GroupItemDTO) => groupItem.type === "subgroup")
                     .forEach((subGroup: SubgroupDTO) => {
-                        subGroup.links.push(...links
-                            .filter((link: Link) => this.isSubGroupLink()(link))
-                            .filter((link: Link) => link.subGroupId === subGroup.id)
-                            .map(this.toLinkDTO));
+                        subGroup.links
+                            .push(...links
+                                .filter((link: Link) => this.isSubGroupLink()(link))
+                                .filter((link: Link) => link.subGroupId === subGroup.id)
+                                .map(this.toLinkDTO));
+                        // sort links inside subgroup
+                        subGroup.links
+                            .sort((a, b) => a.position - b.position);
                     });
+
+                // sort 1st order items of group
+                result
+                    .sort((a, b) => a.position - b.position);
 
                 console.log("--------------------------------------");
                 console.log(result);
                 console.log("--------------------------------------");
-
-                // order 1st level items (root links, subgroups)
-
-                // order 2nd level items (links in each subgroup)
 
                 this.groupItemsObservable.set(result);
             });
