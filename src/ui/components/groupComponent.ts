@@ -1,6 +1,5 @@
 import {AppStateRepository} from "../../backend/repository/AppStateRepository";
-import {GroupViewModel} from "../../viewModel/groupViewModel";
-import {Link, Subgroup} from "../../backend/entity/AppStateEntity";
+import {GroupViewModel, GroupDTO, LinkDTO, SubgroupDTO, GroupItemDTO} from "../../viewModel/groupViewModel";
 
 export class GroupComponent extends HTMLElement {
 
@@ -32,20 +31,42 @@ export class GroupComponent extends HTMLElement {
 
     render() {
         this.groupViewModel.groupItemsObservable
-            .subscribe(attrs => {
+            .subscribe((attrs: GroupDTO) => {
                 console.log("subscribe success");
                 console.log(attrs.length);
                 console.log(attrs);
-                this.htmlTemplate(attrs);
+                this.renderHtmlTemplate(attrs);
             });
     }
 
-    private htmlTemplate(groupItems: (Link | Subgroup)[]): void {
-        this.innerHTML = `
-             ${groupItems.map(
-                groupItem => `<div id="${groupItem.id}">${groupItem.title}</div>`
-            ).join("")}
-        `;
+    private renderHtmlTemplate(groupDto: GroupDTO): void {
+        const parentElem = document.getElementById(groupDto.groupId);
+        groupDto.groupItems.forEach(groupItem => {
+            switch (groupItem.type) {
+                case "link":
+                    this.renderLink(groupItem, parentElem);
+                    break;
+                case "subgroup":
+                    this.renderSubgroup(groupItem, parentElem);
+                    break;
+                default:
+                    console.error("Unknown group item type:", groupItem.type);
+            }
+        });
+    }
+
+    private renderLink(link: LinkDTO, parent: HTMLElement) {
+        const linkElem = document.createElement("link");
+        linkElem.id = link.id;
+        parent.appendChild(linkElem);
+    }
+
+    private renderSubgroup(subgroup: SubgroupDTO, parent: HTMLElement) {
+        const subgroupElem = document.createElement("subgroup");
+        subgroup.links.forEach((link: LinkDTO) => {
+            this.renderLink(link, subgroupElem);
+        });
+        parent.appendChild(subgroupElem);
     }
 
 }

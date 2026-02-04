@@ -4,17 +4,16 @@ import {Link, Subgroup} from "../backend/entity/AppStateEntity";
 
 export interface GroupItemDTO {
     type: string;
+    id: string;
 }
 
 export interface LinkDTO extends GroupItemDTO{
-    id: string;
     title: string;
     url: string;
     position: number;
 }
 
 export interface SubgroupDTO extends GroupItemDTO {
-    id: string;
     title: string;
     links: LinkDTO[];
     position: number;
@@ -22,9 +21,14 @@ export interface SubgroupDTO extends GroupItemDTO {
 
 export type GroupItemsDTO = GroupItemDTO[];
 
+export interface GroupDTO {
+    groupItems:  GroupItemDTO[];
+    groupId: string;
+}
+
 export class GroupViewModel {
 
-    private isLinkInGroupAndEnv =
+    private isItemInGroupAndEnv =
         (environmentId: string, groupId: string) =>
             (groupItem: Link | Subgroup): boolean =>
                 groupItem.environmentId === environmentId &&
@@ -61,7 +65,7 @@ export class GroupViewModel {
         type: "subgroup"
     });
 
-    readonly groupItemsObservable: ObservableValue<GroupItemsDTO>
+    readonly groupItemsObservable: ObservableValue<GroupDTO>
         = new ObservableValue(null as any);
 
     constructor(repo: AppStateRepository, groupId: string) {
@@ -85,13 +89,15 @@ export class GroupViewModel {
                 // fill "root group" links into viewModel structure
                 result.push(...links
                     .filter((link: Link) =>
-                        this.isLinkInGroupAndEnv(currentEnvironmentId, groupId)(link)
+                        this.isItemInGroupAndEnv(currentEnvironmentId, groupId)(link)
                         && this.isRootGroupLink()(link))
                     .map(this.toLinkDTO));
 
                 // fill root groups into viewModel structure
                 result.push(...subGroups
-                    .filter((subgroup: Subgroup) => this.isSubGroup()(subgroup))
+                    .filter((subgroup: Subgroup) =>
+                        this.isItemInGroupAndEnv(currentEnvironmentId, groupId)(subgroup)
+                        && this.isSubGroup()(subgroup))
                     .map(this.toSubGroupDTO));
 
                 // fill "subgroup" links into each subgroups
@@ -116,7 +122,10 @@ export class GroupViewModel {
                 console.log(result);
                 console.log("--------------------------------------");
 
-                this.groupItemsObservable.set(result);
+                this.groupItemsObservable.set({
+                    groupId: groupId,
+                    groupItems: result
+                } satisfies GroupDTO);
             });
     }
 

@@ -43,7 +43,7 @@ export class WorkspaceComponent extends HTMLElement {
             .subscribe((groupIds: string[]) => {
                 this.innerHTML += `
                     ${groupIds.map(
-                        id => `<link-group group-id="${id}"></link-group>`
+                        id => `<link-group id="${id}"></link-group>`
                     ).join("")}
                 `;
             });
@@ -54,7 +54,7 @@ export class WorkspaceComponent extends HTMLElement {
 
     private callbacks(): void {
 
-        console.log("callbacks na link-group");
+        // console.log("callbacks na link-group");
 
         qsAll<GroupComponent>("link-group", this)
             .forEach(lg => {
