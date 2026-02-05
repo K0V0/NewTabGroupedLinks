@@ -2,6 +2,7 @@ import {AppStateRepository} from "../../backend/repository/AppStateRepository";
 import {WorkspaceDTO, WorkspaceViewModel} from "../../viewModel/workspaceViewModel";
 import {GroupComponent} from "./groupComponent";
 import {qsAll} from "../../utils/firstOrderMethods";
+import {ELEM_GROUP} from "../../main"
 
 export class WorkspaceComponent extends HTMLElement {
 
@@ -43,7 +44,7 @@ export class WorkspaceComponent extends HTMLElement {
             .subscribe((groupIds: string[]) => {
                 this.innerHTML += `
                     ${groupIds.map(
-                        id => `<link-group id="${id}"></link-group>`
+                        id => `<${ELEM_GROUP} id="${id}"></${ELEM_GROUP}>`
                     ).join("")}
                 `;
             });
@@ -59,7 +60,6 @@ export class WorkspaceComponent extends HTMLElement {
         qsAll<GroupComponent>("link-group", this)
             .forEach(lg => {
                 lg.setRepository(this.appStateRepository);
-                lg.setGroupId(lg.id);
             });
     }
 
