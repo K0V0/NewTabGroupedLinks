@@ -1,6 +1,5 @@
 import {AppStateRepository} from "../../backend/repository/AppStateRepository";
-import {LinkViewModel} from "../../viewModel/linkViewModel";
-import {GroupViewModel} from "../../viewModel/groupViewModel";
+import {LinkViewModel, LinkDTO} from "../../viewModel/linkViewModel";
 
 export class LinkComponent extends HTMLElement{
 
@@ -27,13 +26,30 @@ export class LinkComponent extends HTMLElement{
     }
 
     render() {
-        const parentElem: HTMLElement | null = document.getElementById(this.id);
-
-        const containerDiv = document.createElement("div");
-        parentElem.appendChild(containerDiv);
+        this.linkViewModel.linkObservable
+            .subscribe((linkDto: LinkDTO)=> {
+                this.renderHtmlTemplate(linkDto);
+            });
     }
 
-    callbacks() {
+    /**
+     *  <div>
+     *      <a href="[[ url ]]">[[ title ]]</a>
+     *  </div>
+     */
+    private renderHtmlTemplate(linkDto: LinkDTO) {
+        const parentElem: HTMLElement | null = document.getElementById(this.id);
+
+        const containerDiv: HTMLElement = document.createElement("div");
+        parentElem.appendChild(containerDiv);
+
+        const anchor: HTMLAnchorElement = document.createElement("a");
+        anchor.href = linkDto.url;
+        anchor.textContent = linkDto.title;
+        containerDiv.appendChild(anchor);
+    }
+
+    private callbacks() {
 
     }
 }
