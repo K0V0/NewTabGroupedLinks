@@ -10,17 +10,19 @@ export interface WorkspaceDTO {
 
 export class WorkspaceViewModel {
 
-    readonly workspacesObservable: ObservableValue<WorkspaceDTO[]> = new ObservableValue(null as any);
-    readonly groupIdsObservable: ObservableValue<string[]> = new ObservableValue(null as any);
-    readonly workspaceObservable: ObservableValue<WorkspaceDTO> = new ObservableValue(null as any);
+    private repo!: AppStateRepository;
 
-    private toWorkspaceDTO = (workspace: Environment): WorkspaceDTO => ({
-        id: workspace.id,
-        title: workspace.name
-    });
+    public readonly workspacesObservable: ObservableValue<WorkspaceDTO[]> = new ObservableValue(null as any);
+    public readonly groupIdsObservable: ObservableValue<string[]> = new ObservableValue(null as any);
+    public readonly workspaceObservable: ObservableValue<WorkspaceDTO> = new ObservableValue(null as any);
 
     constructor(repo: AppStateRepository) {
-        repo.state$.subscribe((state: AppState) => {
+        this.repo = repo;
+        this.subscriptions();
+    }
+
+    private subscriptions() {
+        this.repo.state$.subscribe((state: AppState) => {
 
             // top menu with workspaces (environments)
             this.workspacesObservable.set(
@@ -28,7 +30,7 @@ export class WorkspaceViewModel {
                     .values(state.environments)
                     .map(this.toWorkspaceDTO));
 
-            // workspace
+            // workspace heading
             this.workspaceObservable.set(
                 this.toWorkspaceDTO(
                     state.environments[state.activeEnvironmentId]));
@@ -40,4 +42,21 @@ export class WorkspaceViewModel {
                     .map(group => group.id));
         });
     }
+
+    public addGroup(workspaceId: string, title: string | null) {
+        if (!workspaceId) {
+            console.error("ID of workspace to be created group in is not defined");
+            return;
+        }
+        if (!title) {
+            console.log("No group will be created because user does not provided name");
+            return;
+        }
+        this.repo.createGroup(title, workspaceId);
+    }
+
+    private toWorkspaceDTO = (workspace: Environment): WorkspaceDTO => ({
+        id: workspace.id,
+        title: workspace.name
+    });
 }

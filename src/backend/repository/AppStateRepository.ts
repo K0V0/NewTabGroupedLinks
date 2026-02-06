@@ -53,12 +53,12 @@ export class AppStateRepository {
 
     /* ================== CRUD ================== */
 
-    createGroup(title: string): Promise<void> {
+    createGroup(title: string, environmentId: string): Promise<void> {
         const id = uid();
         this.state.groups[id] = {
-            id,
-            environmentId: this.state.activeEnvironmentId,
-            title,
+            id: id,
+            environmentId: environmentId,
+            title: title,
         };
         return this.save();
     }

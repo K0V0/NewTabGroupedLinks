@@ -18,6 +18,7 @@ export class WorkspaceComponent extends HTMLElement {
         this.workspaceViewModel = new WorkspaceViewModel(this.appStateRepository);
         this.render();
         this.callbacks();
+        this.listeners();
     }
 
     render() {
@@ -40,6 +41,14 @@ export class WorkspaceComponent extends HTMLElement {
             .subscribe((groupIds: string[]) => this.renderGroups(bodyElem, groupIds));
 
        this.renderFooter(footerElem);
+    }
+
+    listeners(): void {
+        this.onAddGroupButtonClick();
+    }
+
+    callbacks(): void {
+        this.bindComponentClassToGroupElements();
     }
 
     /**
@@ -72,6 +81,9 @@ export class WorkspaceComponent extends HTMLElement {
      *  Workspace heading & top menu content
      */
     private renderWorkspaceHead(parentElem: HTMLElement, workspace: WorkspaceDTO) {
+
+        // ID
+        this.id = workspace.id;
 
         // title
         const titleElem: HTMLHeadingElement = document.createElement("h1");
@@ -110,7 +122,7 @@ export class WorkspaceComponent extends HTMLElement {
         parentElem.appendChild(dummyTextElem);
     }
 
-    private callbacks(): void {
+    private bindComponentClassToGroupElements(): void {
 
         // console.log("callbacks na link-group");
 
@@ -118,6 +130,15 @@ export class WorkspaceComponent extends HTMLElement {
             .forEach(lg => {
                 lg.setRepository(this.appStateRepository);
             });
+    }
+
+    private onAddGroupButtonClick() {
+        console.log(this.id);
+        document
+            .querySelector(`.${ACT_ADD_GROUP}`)
+            ?.addEventListener(
+                "click",
+                () => this.workspaceViewModel.addGroup(this.id, prompt("Group name?")));
     }
 
 }
