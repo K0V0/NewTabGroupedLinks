@@ -7,5 +7,8 @@ export default defineConfig({
         outDir: "../dist",
         emptyOutDir: true,
         target: "es2020"
+    },
+    optimizeDeps: {
+        include: ['fast-deep-equal']
     }
 });

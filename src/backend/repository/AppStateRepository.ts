@@ -1,5 +1,5 @@
 import {AppState, Environment, Group, Link} from "../entity/AppStateEntity";
-import {uid} from "../../utils/id";
+import {uid} from "../../utils/firstOrderMethods";
 import {ChromeStorageWrapper} from "../datasource/chromeStorage/chromeStorageWrapper";
 // import {AppStateRepositoryUtils} from "./AppStateRepositoryUtils";
 import {ObservableValue} from "../../utils/observableValue";
@@ -16,7 +16,6 @@ export class AppStateRepository {
     //private repositoryUtils!: AppStateRepositoryUtils;
 
     public async init(initialState: AppState) {
-        console.log("init repa");
         const saved = await this.datasource.get<AppState>(STORAGE_KEY);
         this.state = saved ?? initialState;
         this.state$.set(this.state);
@@ -26,7 +25,6 @@ export class AppStateRepository {
     private async save() {
         await this.datasource.save(STORAGE_KEY, this.state);
         this.state$.set(this.state);
-        console.log("save() called");
     }
 
     public getCurrentEnvironment(): Environment {

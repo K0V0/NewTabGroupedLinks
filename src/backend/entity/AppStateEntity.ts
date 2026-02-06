@@ -22,6 +22,8 @@ export interface GroupItem {
     title: string;
     environmentId: string;
     groupId: string;
+    type: string;
+    position: number;
 }
 
 export interface Subgroup extends GroupItem {
