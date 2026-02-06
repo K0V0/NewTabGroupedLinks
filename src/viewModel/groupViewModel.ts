@@ -118,9 +118,9 @@ export class GroupViewModel {
                 result
                     .sort((a, b) => a.position - b.position);
 
-                console.log("--------------------------------------");
-                console.log(result);
-                console.log("--------------------------------------");
+                // console.log("--------------------------------------");
+                // console.log(result);
+                // console.log("--------------------------------------");
 
                 this.groupItemsObservable.set({
                     groupId: groupId,

@@ -2,7 +2,7 @@ import {AppStateRepository} from "../../backend/repository/AppStateRepository";
 import {WorkspaceDTO, WorkspaceViewModel} from "../../viewModel/workspaceViewModel";
 import {GroupComponent} from "./groupComponent";
 import {qsAll} from "../../utils/firstOrderMethods";
-import {ELEM_GROUP, ELEM_WORKSPACE, ELEM_WORKSPACE_BODY, ELEM_WORKSPACE_HEAD, ACT_SWITCH_WORKSPACE} from "../../main"
+import {ELEM_GROUP, ELEM_WORKSPACE, ELEM_WORKSPACE_BODY, ELEM_WORKSPACE_HEAD, ACT_SWITCH_WORKSPACE, ACT_ADD_GROUP} from "../../main"
 
 export class WorkspaceComponent extends HTMLElement {
 
@@ -60,9 +60,10 @@ export class WorkspaceComponent extends HTMLElement {
     private renderHeader(parentElem: HTMLElement, workspaces: WorkspaceDTO[]) {
         workspaces.forEach((workspace: WorkspaceDTO) => {
             const buttonElem: HTMLButtonElement = document.createElement("button");
-            buttonElem.name = workspace.id;
             buttonElem.title = workspace.title;
             buttonElem.className = ACT_SWITCH_WORKSPACE;
+            buttonElem.value = workspace.id;
+            buttonElem.textContent = workspace.title;
             parentElem.appendChild(buttonElem);
         });
     }
@@ -72,14 +73,20 @@ export class WorkspaceComponent extends HTMLElement {
      */
     private renderWorkspaceHead(parentElem: HTMLElement, workspace: WorkspaceDTO) {
 
+        // title
         const titleElem: HTMLHeadingElement = document.createElement("h1");
         titleElem.title = workspace.title;
+        titleElem.textContent = workspace.title;
         parentElem.appendChild(titleElem);
 
+        //TODO edit workspace title
+
+        // add group
         const addButtonElem: HTMLButtonElement = document.createElement("button");
-        addButtonElem.name = workspace.id;
         addButtonElem.title = "Add new group";
-        addButtonElem.className = ACT_SWITCH_WORKSPACE;
+        addButtonElem.className = ACT_ADD_GROUP;
+        addButtonElem.value = workspace.id;
+        addButtonElem.textContent = " + ";
         parentElem.appendChild(addButtonElem);
     }
 

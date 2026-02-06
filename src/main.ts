@@ -28,6 +28,7 @@ export const ELEM_LINK: string = "link-container";
  */
 
 export const ACT_SWITCH_WORKSPACE: string = "action-switch-workspace";
+export const ACT_ADD_GROUP: string = "action-add-group";
 
 
 // define custom elements used BEFORE they are created/constructed
