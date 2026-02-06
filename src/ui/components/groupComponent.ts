@@ -36,9 +36,21 @@ export class GroupComponent extends HTMLElement {
             });
     }
 
+    /**
+     * Parent to inflate:
+     *
+     *  <link-group id="[[ this.id ]]"></link-group>
+     *
+     * Rendered content:
+     *
+     *  <link-container id="[[ LinkDTO.id ]]"></link-container>
+     *  <link-subgroup id="[[ SubgroupDTO.id ]]">
+     *    <link-container id="[[ LinkDTO.id ]]"></link-container>
+     *  </link-subgroup>
+     */
     private renderHtmlTemplate(groupDto: GroupDTO): void {
         const parentElem: HTMLElement | null = document.getElementById(this.id);
-        groupDto.groupItems.forEach(groupItem => {
+        groupDto.groupItems.forEach((groupItem: GroupItemDTO) => {
             switch (groupItem.type) {
                 case "link":
                     this.renderLink(groupItem, parentElem);
@@ -52,21 +64,23 @@ export class GroupComponent extends HTMLElement {
         });
     }
 
-    private renderLink(link: LinkDTO, parent: HTMLElement) {
-        const linkElem = document.createElement(ELEM_LINK);
+    private renderLink(link: LinkDTO, parent: HTMLElement): void {
+        const linkElem: HTMLElement = document.createElement(ELEM_LINK);
         linkElem.id = link.id;
         parent.appendChild(linkElem);
     }
 
-    private renderSubgroup(subgroup: SubgroupDTO, parent: HTMLElement) {
-        const subgroupElem = document.createElement(ELEM_SUBGROUP);
-        subgroup.links.forEach((link: LinkDTO) => {
+    private renderSubgroup(subgroup: SubgroupDTO, parent: HTMLElement): void {
+        const subgroupElem: HTMLElement = document.createElement(ELEM_SUBGROUP);
+        subgroupElem.id = subgroup.id;
+        subgroup.links.forEach((link: LinkDTO): void => {
             this.renderLink(link, subgroupElem);
         });
         parent.appendChild(subgroupElem);
     }
 
-    private callbacks() {
+    private callbacks(): void {
+        // render containers for links
         qsAll<LinkComponent>(ELEM_LINK, this)
             .forEach((l: LinkComponent) => {
                 l.setRepository(this.appStateRepository);

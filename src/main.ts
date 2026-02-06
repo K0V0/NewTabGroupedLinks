@@ -6,10 +6,29 @@ import {GroupComponent} from "./ui/components/groupComponent";
 import {LinkComponent} from "./ui/components/linkComponent";
 import {SubgroupComponent} from "./ui/components/subgroupComponent";
 
-export const ELEM_WORKSPACE = "workspace-root";
-export const ELEM_GROUP = "link-group";
-export const ELEM_SUBGROUP = "link-subgroup"
-export const ELEM_LINK = "link-container";
+/**
+ *  Custom HTML elements names
+ */
+
+export const ELEM_WORKSPACE = "workspace-plane";
+export const ELEM_WORKSPACE_HEAD = "workspace-plane-head";
+export const ELEM_WORKSPACE_BODY = "workspace-plane-body";
+
+export const ELEM_GROUP: string = "link-group";
+export const ELEM_GROUP_HEAD: string = "link-group-head";
+export const ELEM_GROUP_BODY: string = "link-group-body";
+export const ELEM_GROUP_FOOT: string = "link-group-foot";
+
+export const ELEM_SUBGROUP: string = "link-subgroup"
+
+export const ELEM_LINK: string = "link-container";
+
+/**
+ *  Class names bound to some actions triggered by UI elements by user
+ */
+
+export const ACT_SWITCH_WORKSPACE: string = "action-switch-workspace";
+
 
 // define custom elements used BEFORE they are created/constructed
 // otherwise You are unable to call custom methods for example for
@@ -27,9 +46,10 @@ customElements.define(ELEM_LINK, LinkComponent);
     // create custom HTML element ONLY THAT WAY otherwise (innerHTML() method or
     // raw in html file) construction of object happens before initialized "repository"
     // is injected and program crashes
-    const workspaceElement = document
-        .createElement(ELEM_WORKSPACE) as WorkspaceComponent;
+    const workspaceElement = document.createElement(ELEM_WORKSPACE) as WorkspaceComponent;
     workspaceElement.setRepository(appStateDAO);
-    document.body.appendChild(workspaceElement);
+    document.body
+        .getElementsByTagName("main")[0]
+        .appendChild(workspaceElement);
 
 })();

@@ -33,8 +33,16 @@ export class LinkComponent extends HTMLElement{
     }
 
     /**
+     * Link in the group content. Does not dependent if is direct item of group or item in sub-group.
+     *
+     * Parent to inflate:
+     *
+     *  <link-container id="[[ this.id ]]"></link-container>
+     *
+     * Rendered content:
+     *
      *  <div>
-     *      <a href="[[ url ]]">[[ title ]]</a>
+     *      <a href="[[ LinkDTO.url ]]">[[ LinkDTO.title ]]</a>
      *  </div>
      */
     private renderHtmlTemplate(linkDto: LinkDTO) {
