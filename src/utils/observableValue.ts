@@ -15,7 +15,11 @@ export class ObservableValue<T> {
     }
 
     set(value: T) {
+        console.log("State is calling to be set");
+        console.log(this.value);
+        console.log(value);
         if (isEqual(this.value, value)) return;
+        console.log("State is going to be set");
         this.value = value
         this.subs.forEach(fn => fn(value))
     }

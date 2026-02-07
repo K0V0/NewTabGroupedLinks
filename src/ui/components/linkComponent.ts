@@ -8,18 +8,18 @@ export class LinkComponent extends HTMLElement{
 
     setRepository(repo: AppStateRepository) {
         this.appStateRepository = repo;
-        console.log("set repo");
+        // console.log("set repo");
         this.tryInit();
     }
 
     connectedCallback() {
-        console.log("callbacks");
+        // console.log("callbacks");
         this.tryInit();
     }
 
     tryInit() {
         if (!this.isConnected || !this.appStateRepository || !this.id) return;
-        console.log("inited");
+        // console.log("inited");
         this.linkViewModel = new LinkViewModel(this.appStateRepository, this.id);
         this.render();
         this.callbacks();

@@ -25,6 +25,8 @@ export class GroupViewModel {
             .pick("subgroups", "links", "activeEnvironmentId")
             .subscribe(attrs => {
 
+                console.log("groupViewModel subscribed");
+
                 const currentEnvironmentId = attrs.activeEnvironmentId;
                 const links: Link[] = Object.values(attrs.links);
                 const subGroups: Subgroup[] = Object.values(attrs.subgroups);
