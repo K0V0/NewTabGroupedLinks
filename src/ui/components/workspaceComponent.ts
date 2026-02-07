@@ -1,5 +1,5 @@
 import {AppStateRepository} from "../../backend/repository/AppStateRepository";
-import {WorkspaceDTO, WorkspaceViewModel} from "../../viewModel/workspaceViewModel";
+import {WorkspaceDTO, WorkspaceViewModel, GroupDTO} from "../../viewModel/workspaceViewModel";
 import {GroupComponent} from "./groupComponent";
 import {qsAll} from "../../utils/firstOrderMethods";
 import {ELEM_GROUP, ELEM_WORKSPACE, ELEM_WORKSPACE_BODY, ELEM_WORKSPACE_HEAD, ACT_SWITCH_WORKSPACE, ACT_ADD_GROUP} from "../../main"
@@ -21,7 +21,7 @@ export class WorkspaceComponent extends HTMLElement {
         this.listeners();
     }
 
-    render() {
+    private render() {
 
         const headerElem: HTMLElement = document.body.getElementsByTagName("header")[0];
         const footerElem: HTMLElement = document.body.getElementsByTagName("footer")[0];
@@ -37,17 +37,17 @@ export class WorkspaceComponent extends HTMLElement {
         this.workspaceViewModel.workspaceObservable
             .subscribe((workspace: WorkspaceDTO) => this.renderWorkspaceHead(headElem, workspace));
 
-        this.workspaceViewModel.groupIdsObservable
+        this.workspaceViewModel.groupsObservable
             .subscribe((groupIds: string[]) => this.renderGroups(bodyElem, groupIds));
 
        this.renderFooter(footerElem);
     }
 
-    listeners(): void {
+    private listeners(): void {
         this.onAddGroupButtonClick();
     }
 
-    callbacks(): void {
+    private callbacks(): void {
         this.bindComponentClassToGroupElements();
     }
 
@@ -105,10 +105,11 @@ export class WorkspaceComponent extends HTMLElement {
     /**
      *  Workspace's groups with links and subgroups containers
      */
-    private renderGroups(parentElem: HTMLElement, groupIds: string[]) {
-        groupIds.forEach(groupId => {
+    private renderGroups(parentElem: HTMLElement, groups: GroupDTO[]) {
+        groups.forEach((group: GroupDTO) => {
             const groupElem: HTMLElement = document.createElement(ELEM_GROUP);
-            groupElem.id = groupId;
+            groupElem.id = group.id;
+            groupElem.title = group.title;
             parentElem.appendChild(groupElem);
         });
     }
@@ -123,9 +124,7 @@ export class WorkspaceComponent extends HTMLElement {
     }
 
     private bindComponentClassToGroupElements(): void {
-
-        // console.log("callbacks na link-group");
-
+        // renders containers for groups
         qsAll<GroupComponent>("link-group", this)
             .forEach(lg => {
                 lg.setRepository(this.appStateRepository);
@@ -133,7 +132,6 @@ export class WorkspaceComponent extends HTMLElement {
     }
 
     private onAddGroupButtonClick() {
-        console.log(this.id);
         document
             .querySelector(`.${ACT_ADD_GROUP}`)
             ?.addEventListener(

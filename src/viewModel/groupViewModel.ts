@@ -8,13 +8,15 @@ export class GroupViewModel {
 
     private repo!: AppStateRepository;
     private groupId!: string;
+    private groupTitle!: string;
 
     readonly groupItemsObservable: ObservableValue<GroupDTO>
         = new ObservableValue(null as any);
 
-    constructor(repo: AppStateRepository, groupId: string) {
+    constructor(repo: AppStateRepository, groupId: string, groupTitle: string) {
         this.repo = repo;
         this.groupId = groupId;
+        this.groupTitle = groupTitle;
         this.subscriptions();
     }
 
@@ -63,9 +65,26 @@ export class GroupViewModel {
 
                 this.groupItemsObservable.set({
                     groupId: this.groupId,
-                    groupItems: result
+                    groupItems: result,
+                    title: this.groupTitle
                 } satisfies GroupDTO);
             });
+    }
+
+    public addLink(groupId: string, subGroupId: string, url: string, title: string): void {
+        if (!groupId) {
+            console.error("Link does not contain groupId where it should belong");
+            return;
+        }
+        if (!url) {
+            console.log("Link does not contains any url");
+            return;
+        }
+        if (!title) {
+            console.log("Link does not contain any title");
+            return;
+        }
+        this.repo.createLink(groupId, subGroupId, title, url);
     }
 
 }

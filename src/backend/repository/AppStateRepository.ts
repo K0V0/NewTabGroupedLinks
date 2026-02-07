@@ -75,7 +75,7 @@ export class AppStateRepository {
         return this.save();
     }
 
-    createLink(groupId: string, title: string, url: string): Promise<void> {
+    createLink(groupId: string, subGroupId: string, title: string, url: string): Promise<void> {
         this.getGroup(groupId);
         const id = uid();
         this.state.links[id] = {
@@ -84,7 +84,7 @@ export class AppStateRepository {
             url: url,
             environmentId: this.state.activeEnvironmentId,
             groupId: groupId,
-            subGroupId: ""
+            subGroupId: subGroupId
         };
         return this.save();
     }

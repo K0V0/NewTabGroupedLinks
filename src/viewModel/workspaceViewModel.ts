@@ -1,9 +1,14 @@
 import {AppStateRepository} from "../backend/repository/AppStateRepository";
-import {AppState, Link, Environment} from "../backend/entity/AppStateEntity";
+import {AppState, Link, Environment, Group} from "../backend/entity/AppStateEntity";
 import {ObservableValue} from "../utils/observableValue";
 import {LinkDTO} from "./groupViewModel";
 
 export interface WorkspaceDTO {
+    id: string;
+    title: string;
+}
+
+export interface GroupDTO {
     id: string;
     title: string;
 }
@@ -13,7 +18,7 @@ export class WorkspaceViewModel {
     private repo!: AppStateRepository;
 
     public readonly workspacesObservable: ObservableValue<WorkspaceDTO[]> = new ObservableValue(null as any);
-    public readonly groupIdsObservable: ObservableValue<string[]> = new ObservableValue(null as any);
+    public readonly groupsObservable: ObservableValue<GroupDTO> = new ObservableValue(null as any);
     public readonly workspaceObservable: ObservableValue<WorkspaceDTO> = new ObservableValue(null as any);
 
     constructor(repo: AppStateRepository) {
@@ -36,10 +41,10 @@ export class WorkspaceViewModel {
                     state.environments[state.activeEnvironmentId]));
 
             // groups with links
-            this.groupIdsObservable.set(
+            this.groupsObservable.set(
                 Object
                     .values(state.groups)
-                    .map(group => group.id));
+                    .map(this.toGroupDTO));
         });
     }
 
@@ -58,5 +63,10 @@ export class WorkspaceViewModel {
     private toWorkspaceDTO = (workspace: Environment): WorkspaceDTO => ({
         id: workspace.id,
         title: workspace.name
+    });
+
+    private toGroupDTO = (group: Group): GroupDTO => ({
+        id: group.id,
+        title: group.title
     });
 }

@@ -1,19 +1,17 @@
 
 export interface GroupItemDTO {
+    title: string;
     type: string;
     id: string;
+    position: number;
 }
 
 export interface LinkDTO extends GroupItemDTO{
-    title: string;
     url: string;
-    position: number;
 }
 
 export interface SubgroupDTO extends GroupItemDTO {
-    title: string;
     links: LinkDTO[];
-    position: number;
 }
 
 export type GroupItemsDTO = GroupItemDTO[];
@@ -21,4 +19,5 @@ export type GroupItemsDTO = GroupItemDTO[];
 export interface GroupDTO {
     groupItems:  GroupItemDTO[];
     groupId: string;
+    title: string;
 }

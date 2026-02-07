@@ -7,6 +7,17 @@ import {LinkComponent} from "./ui/components/linkComponent";
 import {SubgroupComponent} from "./ui/components/subgroupComponent";
 
 /**
+ *  CSS files
+ */
+
+import './ui/styles/reset.css'
+import './ui/styles/main.css'
+import './ui/styles/workspace.css'
+import './ui/styles/group.css'
+import './ui/styles/subgroup.css'
+import './ui/styles/link.css'
+
+/**
  *  Custom HTML elements names
  */
 
@@ -29,7 +40,7 @@ export const ELEM_LINK: string = "link-container";
 
 export const ACT_SWITCH_WORKSPACE: string = "action-switch-workspace";
 export const ACT_ADD_GROUP: string = "action-add-group";
-
+export const ACT_ADD_LINK: string = "action-add-link";
 
 // define custom elements used BEFORE they are created/constructed
 // otherwise You are unable to call custom methods for example for
