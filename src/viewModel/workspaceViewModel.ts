@@ -29,6 +29,9 @@ export class WorkspaceViewModel {
     private subscriptions() {
         this.repo.state$.subscribe((state: AppState) => {
 
+            console.log("workspaceViemModel subscribe triggered");
+            console.log("workspaceViemModel subscribe data: " + Object.values(state.groups).length);
+
             // top menu with workspaces (environments)
             this.workspacesObservable.set(
                 Object

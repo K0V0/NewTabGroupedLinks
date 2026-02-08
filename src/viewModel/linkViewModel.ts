@@ -22,6 +22,8 @@ export class LinkViewModel {
             .pick("links")
             .subscribe(attrs => {
 
+                console.log("linkViemModel subscribe triggered");
+
                 const result: LinkDTO = this.toLinkDTO(Object
                     .values(attrs.links)
                     .find((link: Link) => link.id === linkId));

@@ -17,14 +17,21 @@ export class AppStateRepository {
 
     public async init(initialState: AppState) {
         const saved = await this.datasource.get<AppState>(STORAGE_KEY);
+        // console.log("AppStateRepository - init(): saved state: " + saved)
         this.state = saved ?? initialState;
         this.state$.set(this.state);
         return this.save();
     }
 
     private async save() {
+        // console.log("AppStateRepository - save(): this.state before datasource save: " + Object.values(this.state.groups).length);
+        // console.log("AppStateRepository - save(): this.$state.get() before datasource save: " + Object.values(this.state$.get().groups).length);
         await this.datasource.save(STORAGE_KEY, this.state);
+        // console.log("AppStateRepository - save(): this.state after datasource save: " + Object.values(this.state.groups).length);
+        // console.log("AppStateRepository - save(): this.$state.get() after datasource save: " + Object.values(this.state$.get().groups).length);
         this.state$.set(this.state);
+        // console.log("AppStateRepository - save(): this.state after state set: " + Object.values(this.state.groups).length);
+        // console.log("AppStateRepository - save(): this.$state.get() after state set: " + Object.values(this.state$.get().groups).length);
     }
 
     public getCurrentEnvironment(): Environment {
@@ -55,10 +62,16 @@ export class AppStateRepository {
 
     createGroup(title: string, environmentId: string): Promise<void> {
         const id = uid();
-        this.state.groups[id] = {
-            id: id,
-            environmentId: environmentId,
-            title: title,
+        this.state = {
+            ...this.state,
+            groups: {
+                ...this.state.groups,
+                [id]: {
+                    id,
+                    environmentId,
+                    title
+                }
+            }
         };
         return this.save();
     }

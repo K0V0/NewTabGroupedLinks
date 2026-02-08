@@ -1,7 +1,7 @@
 import {AppStateRepository} from "../../backend/repository/AppStateRepository";
 import {WorkspaceDTO, WorkspaceViewModel, GroupDTO} from "../../viewModel/workspaceViewModel";
 import {GroupComponent} from "./groupComponent";
-import {qsAll} from "../../utils/firstOrderMethods";
+import {qsAll, handleRendering} from "../../utils/firstOrderMethods";
 import {ELEM_GROUP, ELEM_WORKSPACE, ELEM_WORKSPACE_BODY, ELEM_WORKSPACE_HEAD, ACT_SWITCH_WORKSPACE, ACT_ADD_GROUP} from "../../main"
 
 export class WorkspaceComponent extends HTMLElement {
@@ -48,7 +48,7 @@ export class WorkspaceComponent extends HTMLElement {
     }
 
     private callbacks(): void {
-        this.bindComponentClassToGroupElements();
+        //this.bindComponentClassToGroupElements();
     }
 
     /**
@@ -106,12 +106,17 @@ export class WorkspaceComponent extends HTMLElement {
      *  Workspace's groups with links and subgroups containers
      */
     private renderGroups(parentElem: HTMLElement, groups: GroupDTO[]) {
-        groups.forEach((group: GroupDTO) => {
-            const groupElem: HTMLElement = document.createElement(ELEM_GROUP);
-            groupElem.id = group.id;
-            groupElem.title = group.title;
-            parentElem.appendChild(groupElem);
-        });
+        handleRendering<GroupDTO>(
+            parentElem,
+            groups,
+            group => group.id,
+            group => {
+                const groupElem = document.createElement(ELEM_GROUP) as GroupComponent;
+                groupElem.title = group.title;
+                groupElem.setRepository(this.appStateRepository);
+                return groupElem;
+            }
+        );
     }
 
     /**
@@ -123,13 +128,13 @@ export class WorkspaceComponent extends HTMLElement {
         parentElem.appendChild(dummyTextElem);
     }
 
-    private bindComponentClassToGroupElements(): void {
-        // renders containers for groups
-        qsAll<GroupComponent>("link-group", this)
-            .forEach(lg => {
-                lg.setRepository(this.appStateRepository);
-            });
-    }
+    // private bindComponentClassToGroupElements(): void {
+    //     // renders containers for groups
+    //     qsAll<GroupComponent>("link-group", this)
+    //         .forEach(lg => {
+    //             lg.setRepository(this.appStateRepository);
+    //         });
+    // }
 
     private onAddGroupButtonClick() {
         document

@@ -25,7 +25,7 @@ export class GroupViewModel {
             .pick("subgroups", "links", "activeEnvironmentId")
             .subscribe(attrs => {
 
-                console.log("groupViewModel subscribed");
+                //console.log("groupViewModel subscribe triggered");
 
                 const currentEnvironmentId = attrs.activeEnvironmentId;
                 const links: Link[] = Object.values(attrs.links);
@@ -64,6 +64,8 @@ export class GroupViewModel {
                 // sort 1st order items of group
                 result
                     .sort((a, b) => a.position - b.position);
+
+                //console.log("groupViewModel subscribe result: " + result);
 
                 this.groupItemsObservable.set({
                     groupId: this.groupId,
