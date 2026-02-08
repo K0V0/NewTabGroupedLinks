@@ -2,6 +2,7 @@ import {AppStateRepository} from "../backend/repository/AppStateRepository";
 import {AppState, Link, Environment, Group} from "../backend/entity/AppStateEntity";
 import {ObservableValue} from "../utils/observableValue";
 import {LinkDTO} from "./groupViewModel";
+import {Logger} from "../utils/logger";
 
 export interface WorkspaceDTO {
     id: string;
@@ -14,6 +15,8 @@ export interface GroupDTO {
 }
 
 export class WorkspaceViewModel {
+
+    private log: Logger = new Logger("WorkspaceViewModel");
 
     private repo!: AppStateRepository;
 
@@ -29,8 +32,8 @@ export class WorkspaceViewModel {
     private subscriptions() {
         this.repo.state$.subscribe((state: AppState) => {
 
-            console.log("workspaceViemModel subscribe triggered");
-            console.log("workspaceViemModel subscribe data: " + Object.values(state.groups).length);
+            this.log.debug('subscriptions', "triggered");
+            this.log.debug('subscriptions', "incoming data: " + Object.values(state.groups).length);
 
             // top menu with workspaces (environments)
             this.workspacesObservable.set(
