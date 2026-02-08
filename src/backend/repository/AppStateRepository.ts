@@ -17,14 +17,21 @@ export class AppStateRepository {
 
     public async init(initialState: AppState) {
         const saved = await this.datasource.get<AppState>(STORAGE_KEY);
+        // console.log("AppStateRepository - init(): saved state: " + saved)
         this.state = saved ?? initialState;
         this.state$.set(this.state);
         return this.save();
     }
 
     private async save() {
+        // console.log("AppStateRepository - save(): this.state before datasource save: " + Object.values(this.state.groups).length);
+        // console.log("AppStateRepository - save(): this.$state.get() before datasource save: " + Object.values(this.state$.get().groups).length);
         await this.datasource.save(STORAGE_KEY, this.state);
+        // console.log("AppStateRepository - save(): this.state after datasource save: " + Object.values(this.state.groups).length);
+        // console.log("AppStateRepository - save(): this.$state.get() after datasource save: " + Object.values(this.state$.get().groups).length);
         this.state$.set(this.state);
+        // console.log("AppStateRepository - save(): this.state after state set: " + Object.values(this.state.groups).length);
+        // console.log("AppStateRepository - save(): this.$state.get() after state set: " + Object.values(this.state$.get().groups).length);
     }
 
     public getCurrentEnvironment(): Environment {
@@ -53,12 +60,18 @@ export class AppStateRepository {
 
     /* ================== CRUD ================== */
 
-    createGroup(title: string): Promise<void> {
+    createGroup(title: string, environmentId: string): Promise<void> {
         const id = uid();
-        this.state.groups[id] = {
-            id,
-            environmentId: this.state.activeEnvironmentId,
-            title,
+        this.state = {
+            ...this.state,
+            groups: {
+                ...this.state.groups,
+                [id]: {
+                    id,
+                    environmentId,
+                    title
+                }
+            }
         };
         return this.save();
     }
@@ -75,7 +88,7 @@ export class AppStateRepository {
         return this.save();
     }
 
-    createLink(groupId: string, title: string, url: string): Promise<void> {
+    createLink(groupId: string, subGroupId: string, title: string, url: string): Promise<void> {
         this.getGroup(groupId);
         const id = uid();
         this.state.links[id] = {
@@ -84,7 +97,7 @@ export class AppStateRepository {
             url: url,
             environmentId: this.state.activeEnvironmentId,
             groupId: groupId,
-            subGroupId: ""
+            subGroupId: subGroupId
         };
         return this.save();
     }

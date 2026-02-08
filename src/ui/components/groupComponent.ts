@@ -1,8 +1,17 @@
 import {AppStateRepository} from "../../backend/repository/AppStateRepository";
-import {GroupViewModel, GroupDTO, LinkDTO, SubgroupDTO, GroupItemDTO} from "../../viewModel/groupViewModel";
+import {GroupViewModel} from "../../viewModel/groupViewModel";
+import {GroupDTO, GroupItemDTO, LinkDTO, SubgroupDTO, GroupItemsDTO} from "../../viewModel/groupViewModelInterfaces";
 import {qsAll} from "../../utils/firstOrderMethods";
 import {LinkComponent} from "./linkComponent"
-import {ELEM_LINK, ELEM_SUBGROUP} from "../../main"
+import {
+    ELEM_LINK,
+    ELEM_SUBGROUP,
+    ELEM_GROUP_HEAD,
+    ELEM_GROUP_FOOT,
+    ELEM_GROUP_BODY,
+    ACT_SWITCH_WORKSPACE,
+    ACT_ADD_LINK, ACT_ADD_GROUP
+} from "../../main"
 
 export class GroupComponent extends HTMLElement {
 
@@ -18,22 +27,26 @@ export class GroupComponent extends HTMLElement {
         this.tryInit();
     }
 
-    tryInit() {
+    private tryInit() {
         if (!this.isConnected || !this.appStateRepository || !this.id) return;
         // console.log("inited");
-        this.groupViewModel = new GroupViewModel(this.appStateRepository, this.id);
+        this.groupViewModel = new GroupViewModel(this.appStateRepository, this.id, this.title);
         this.render();
         this.callbacks();
+        this.listeners()
     }
 
-    render() {
+    private render(): void {
         this.groupViewModel.groupItemsObservable
-            .subscribe((attrs: GroupDTO) => {
-                // console.log("subscribe success");
-                // console.log(attrs.length);
-                // console.log(attrs);
-                this.renderHtmlTemplate(attrs);
-            });
+            .subscribe((attrs: GroupDTO) => this.renderHtmlTemplate(attrs));
+    }
+
+    private listeners(): void {
+        this.onAddLinkButtonClick();
+    }
+
+    private callbacks(): void {
+       this.bindComponentClassToLinkElements();
     }
 
     /**
@@ -43,25 +56,56 @@ export class GroupComponent extends HTMLElement {
      *
      * Rendered content:
      *
-     *  <link-container id="[[ LinkDTO.id ]]"></link-container>
-     *  <link-subgroup id="[[ SubgroupDTO.id ]]">
+     *  <link-group-head></link-group-head>
+     *  <link-group-body>
      *    <link-container id="[[ LinkDTO.id ]]"></link-container>
-     *  </link-subgroup>
+     *    <link-subgroup id="[[ SubgroupDTO.id ]]">
+     *      <link-container id="[[ LinkDTO.id ]]"></link-container>
+     *    </link-subgroup>
+     *  </link-group-body>
+     *  <link-group-foot>
+     *    <button class="[[ ACT_ADD_LINK ]]" title="[[ GroupDTO.title ]]" value="[[ GroupDTO.id ]]">
+     *      [[ GroupDTO.title ]]
+     *    </button>
+     *  </link-group-foot>
      */
     private renderHtmlTemplate(groupDto: GroupDTO): void {
         const parentElem: HTMLElement | null = document.getElementById(this.id);
+
+        const headerElem: HTMLElement = document.createElement(ELEM_GROUP_HEAD);
+        const bodyElem: HTMLElement = document.createElement(ELEM_GROUP_BODY);
+        const footerElem: HTMLElement = document.createElement(ELEM_GROUP_FOOT);
+        parentElem.appendChild(headerElem);
+        parentElem.appendChild(bodyElem);
+        parentElem.appendChild(footerElem);
+
+        // group head
+        const titleElem: HTMLHeadingElement = document.createElement("h2");
+        titleElem.title = groupDto.title;
+        titleElem.textContent = groupDto.title
+        headerElem.appendChild(titleElem);
+
+        // group body with links and subgroups
         groupDto.groupItems.forEach((groupItem: GroupItemDTO) => {
             switch (groupItem.type) {
                 case "link":
-                    this.renderLink(groupItem, parentElem);
+                    this.renderLink(groupItem, bodyElem);
                     break;
                 case "subgroup":
-                    this.renderSubgroup(groupItem, parentElem);
+                    this.renderSubgroup(groupItem, bodyElem);
                     break;
                 default:
                     console.error("Unknown group item type:", groupItem.type);
             }
         });
+
+        // group foot with add button
+        const addButtonElem: HTMLButtonElement = document.createElement("button");
+        addButtonElem.title = "Add link";
+        addButtonElem.className = ACT_ADD_LINK;
+        addButtonElem.value = groupDto.groupId;
+        addButtonElem.textContent = " + ";
+        footerElem.appendChild(addButtonElem);
     }
 
     private renderLink(link: LinkDTO, parent: HTMLElement): void {
@@ -79,12 +123,25 @@ export class GroupComponent extends HTMLElement {
         parent.appendChild(subgroupElem);
     }
 
-    private callbacks(): void {
+    private bindComponentClassToLinkElements(): void {
         // render containers for links
         qsAll<LinkComponent>(ELEM_LINK, this)
             .forEach((l: LinkComponent) => {
                 l.setRepository(this.appStateRepository);
             });
+    }
+
+    private onAddLinkButtonClick() {
+        document
+            .querySelector(`.${ACT_ADD_LINK}`)
+            ?.addEventListener(
+                "click",
+                () => {
+                    const title = prompt("Link title?");
+                    const url = prompt("URL?");
+                    this.groupViewModel.addLink(this.id, "", title, url);
+                });
+
     }
 
 }

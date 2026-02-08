@@ -1,7 +1,7 @@
 import {AppStateRepository} from "../../backend/repository/AppStateRepository";
-import {WorkspaceDTO, WorkspaceViewModel} from "../../viewModel/workspaceViewModel";
+import {WorkspaceDTO, WorkspaceViewModel, GroupDTO} from "../../viewModel/workspaceViewModel";
 import {GroupComponent} from "./groupComponent";
-import {qsAll} from "../../utils/firstOrderMethods";
+import {qsAll, handleRendering} from "../../utils/firstOrderMethods";
 import {ELEM_GROUP, ELEM_WORKSPACE, ELEM_WORKSPACE_BODY, ELEM_WORKSPACE_HEAD, ACT_SWITCH_WORKSPACE, ACT_ADD_GROUP} from "../../main"
 
 export class WorkspaceComponent extends HTMLElement {
@@ -18,9 +18,10 @@ export class WorkspaceComponent extends HTMLElement {
         this.workspaceViewModel = new WorkspaceViewModel(this.appStateRepository);
         this.render();
         this.callbacks();
+        this.listeners();
     }
 
-    render() {
+    private render() {
 
         const headerElem: HTMLElement = document.body.getElementsByTagName("header")[0];
         const footerElem: HTMLElement = document.body.getElementsByTagName("footer")[0];
@@ -36,10 +37,18 @@ export class WorkspaceComponent extends HTMLElement {
         this.workspaceViewModel.workspaceObservable
             .subscribe((workspace: WorkspaceDTO) => this.renderWorkspaceHead(headElem, workspace));
 
-        this.workspaceViewModel.groupIdsObservable
+        this.workspaceViewModel.groupsObservable
             .subscribe((groupIds: string[]) => this.renderGroups(bodyElem, groupIds));
 
        this.renderFooter(footerElem);
+    }
+
+    private listeners(): void {
+        this.onAddGroupButtonClick();
+    }
+
+    private callbacks(): void {
+        //this.bindComponentClassToGroupElements();
     }
 
     /**
@@ -73,6 +82,9 @@ export class WorkspaceComponent extends HTMLElement {
      */
     private renderWorkspaceHead(parentElem: HTMLElement, workspace: WorkspaceDTO) {
 
+        // ID
+        this.id = workspace.id;
+
         // title
         const titleElem: HTMLHeadingElement = document.createElement("h1");
         titleElem.title = workspace.title;
@@ -93,12 +105,18 @@ export class WorkspaceComponent extends HTMLElement {
     /**
      *  Workspace's groups with links and subgroups containers
      */
-    private renderGroups(parentElem: HTMLElement, groupIds: string[]) {
-        groupIds.forEach(groupId => {
-            const groupElem: HTMLElement = document.createElement(ELEM_GROUP);
-            groupElem.id = groupId;
-            parentElem.appendChild(groupElem);
-        });
+    private renderGroups(parentElem: HTMLElement, groups: GroupDTO[]) {
+        handleRendering<GroupDTO>(
+            parentElem,
+            groups,
+            group => group.id,
+            group => {
+                const groupElem = document.createElement(ELEM_GROUP) as GroupComponent;
+                groupElem.title = group.title;
+                groupElem.setRepository(this.appStateRepository);
+                return groupElem;
+            }
+        );
     }
 
     /**
@@ -110,14 +128,20 @@ export class WorkspaceComponent extends HTMLElement {
         parentElem.appendChild(dummyTextElem);
     }
 
-    private callbacks(): void {
+    // private bindComponentClassToGroupElements(): void {
+    //     // renders containers for groups
+    //     qsAll<GroupComponent>("link-group", this)
+    //         .forEach(lg => {
+    //             lg.setRepository(this.appStateRepository);
+    //         });
+    // }
 
-        // console.log("callbacks na link-group");
-
-        qsAll<GroupComponent>("link-group", this)
-            .forEach(lg => {
-                lg.setRepository(this.appStateRepository);
-            });
+    private onAddGroupButtonClick() {
+        document
+            .querySelector(`.${ACT_ADD_GROUP}`)
+            ?.addEventListener(
+                "click",
+                () => this.workspaceViewModel.addGroup(this.id, prompt("Group name?")));
     }
 
 }
